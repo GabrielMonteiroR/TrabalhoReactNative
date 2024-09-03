@@ -1,37 +1,56 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function Layout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          title: 'Início',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home-variant" color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="comida"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          title: 'Comida',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="food" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="dormir"
+        options={{
+          title: 'Dormir',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="sleep" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="jogos"
+        options={{
+          title: 'Jogos',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="gamepad-variant" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="criarPet"
+        options={{
+          title: 'Criar Pet',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="cat" color={color} size={size} />
           ),
         }}
       />
     </Tabs>
   );
 }
+
