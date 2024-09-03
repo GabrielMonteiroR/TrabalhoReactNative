@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
+import { ScrollView } from 'react-native-reanimated/lib/typescript/Animated';
 
 export default function IndexScreen() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function IndexScreen() {
   const arkanaMuitofelizImage = characterImagesAPI.getImageByCharacterAndState(1, 'muitofeliz');
 
   return (
+    <ScrollView>
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Tela Inicial</Text>
 
@@ -48,5 +50,6 @@ export default function IndexScreen() {
         style={{ width: 100, height: 100, margin: 10 }}
       />
     </View>
+    </ScrollView>
   );
 }
