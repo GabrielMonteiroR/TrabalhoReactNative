@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
-import { ScrollView } from 'react-native-reanimated/lib/typescript/Animated';
+import { ScrollView } from 'react-native';
 
 export default function IndexScreen() {
   const router = useRouter();
