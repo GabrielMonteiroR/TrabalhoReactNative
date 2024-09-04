@@ -29,31 +29,33 @@ export function usePetsDatabase(database: SQLiteDatabase) {
         } finally {
             await query.finalizeAsync();
         }
-
-        async function findAll() {
-            try {
-                return await database.getAllAsync<Pet>(`SELECT * FROM pets;`);
-
-            } catch (error) {
-                throw error;
-            }
-        }
-
-        async function findById(id: number) {
-            try {
-                return await database.getFirstAsync<Pet>(`SELECT * FROM pets WHERE id = ?;`, id);
-            } catch (error) {
-                throw error;
-            }
-        }
-
-        async function findByName(search: string) {
-            try {
-                return await database.getAllAsync<Pet>(`SELECT * FROM pets WHERE nome LIKE ?;`, `%${search}%`);
-            } catch (error) {
-                throw error;
-            }
-        }
-        return { createPet, findAll, findById, findByName };
     }
-};
+
+    async function findAll() {
+        try {
+            return await database.getAllAsync<Pet>(`SELECT * FROM pets;`);
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async function findById(id: number) {
+        try {
+            return await database.getFirstAsync<Pet>(`SELECT * FROM pets WHERE id = ?;`, id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async function findByName(search: string) {
+        try {
+            return await database.getAllAsync<Pet>(`SELECT * FROM pets WHERE nome LIKE ?;`, `%${search}%`);
+        } catch (error) {
+            throw error;
+        }
+    }
+    return { createPet, findAll, findById, findByName };
+}
+
+
