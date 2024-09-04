@@ -1,8 +1,17 @@
+import React, { useEffect } from 'react';
 import { Tabs } from 'expo-router';
+import * as SQLite from 'expo-sqlite';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { initializeDatabase } from '../../db/initializeDatabase'; 
 
+const database = SQLite.openDatabaseSync('pets.db');
 
 export default function Layout() {
+
+  useEffect(() => {
+    initializeDatabase(database);
+  }, []);
+
   return (
     <Tabs>
       <Tabs.Screen
@@ -53,4 +62,3 @@ export default function Layout() {
     </Tabs>
   );
 }
-
