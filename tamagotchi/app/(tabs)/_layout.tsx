@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { initializeDatabase } from '../../db/initializeDatabase';
 
 
 export default function Layout() {
