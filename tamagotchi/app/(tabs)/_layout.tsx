@@ -1,13 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-<<<<<<< HEAD
-import { initializeDatabase } from '../../db/initializeDatabase';
-=======
 import { Text } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { initializeDatabase } from '../../db/initializeDatabase'; 
->>>>>>> 6670394d1f2e3fd1c4b8edd09ee63d4eb499cb1a
 
 
 export const DatabaseContext = createContext<SQLite.SQLiteDatabase | null>(null); 
