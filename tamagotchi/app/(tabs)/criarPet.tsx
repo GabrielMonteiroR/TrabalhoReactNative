@@ -4,10 +4,6 @@ import { usePetsDatabase, Pet } from '../../db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import * as SQLite from 'expo-sqlite';
-
-// Crie a instância da base de dados
-const db = SQLite.openDatabaseSync('pets.db');
 
 const styles = StyleSheet.create({
   // Estilos simplificados para clareza
@@ -82,7 +78,7 @@ export default function Index() {
   const [selectedImage, setSelectedImage] = useState<CharacterId | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const petsDatabase = usePetsDatabase(db);
+  const petsDatabase = usePetsDatabase();
   const router = useRouter();
 
   async function create() {
