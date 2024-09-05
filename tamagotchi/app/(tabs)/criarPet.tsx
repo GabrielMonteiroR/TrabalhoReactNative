@@ -27,19 +27,19 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 5,
     borderWidth: 1,
-    borderColor: '#FFF',
+    borderColor: '#000',
     borderRadius: 5,
   },
   selectedImageCard: {
     borderColor: '#ED2124',
   },
   image: {
-    width: 80, // Aumentado de 50 para 100
-    height: 80, // Aumentado de 50 para 100
+    width: 80,
+    height: 80,
   },
   selectedImage: {
-    width: 200, // Aumentado de 120 para 200
-    height: 200, // Aumentado de 120 para 200
+    width: 200,
+    height: 200,
   },
   selectedImageContainer: {
     alignItems: 'center',
@@ -71,50 +71,36 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function CreateCharacterScreen() {
+export default function CreatePet() {
   const [name, setName] = useState('');
-  const [search, setSearch] = useState('');
-  const [pets, setPets] = useState<Pet[]>([]);
+  const [pets] = useState<Pet[]>([]);
   const [selectedImage, setSelectedImage] = useState<CharacterId | null>(null);
-
-  const petsDatabase = usePetsDatabase();
   const router = useRouter();
+
+  const { createPet } = usePetsDatabase();
 
   async function create() {
     try {
-      if (!name) {
-        return Alert.alert('Adicione um nome ao personagem');
-      }
       if (selectedImage === null) {
         return Alert.alert('Selecione uma imagem');
       }
+      if (!name) {
+        return Alert.alert('Adicione um nome ao personagem');
+      }
 
-      const response = await petsDatabase.createPet({
+      const response = await createPet({
         nome: name,
         character_id: selectedImage,
       });
 
-      Alert.alert('Pet cadastrado com o ID: ' + response.insertedRowId);
+      Alert.alert('Pet cadastrado com sucesso!');
       setName('');
       setSelectedImage(null);
-      await list();
+
     } catch (error) {
       console.log('Erro ao criar pet:', error);
     }
   }
-
-  async function list() {
-    try {
-      const response = await petsDatabase.findAll(search);
-      setPets(response);
-    } catch (error) {
-      console.log('Erro ao listar pets:', error);
-    }
-  }
-
-  useEffect(() => {
-    list();
-  }, [search]);
 
   const selectedImageSource =
     selectedImage !== null ? characterImagesAPI.getImageByCharacterAndState(selectedImage, 'muitofeliz') : null;
@@ -134,7 +120,7 @@ export default function CreateCharacterScreen() {
         style={styles.input}
       />
 
-      <Text style={{ color: '#000', marginBottom: 10 }}>Escolha uma imagem:</Text>
+      <Text style={{ color: '#000', marginBottom: 10 }}>Selecione uma imagem:</Text>
       <View style={styles.imageContainer}>
         {Object.keys(characterImagesAPI.getAllCharacterImages()).map((key) => (
           <Pressable
@@ -164,11 +150,11 @@ export default function CreateCharacterScreen() {
               {item.character_id && characterImagesAPI.getImageByCharacterAndState(item.character_id, 'muitofeliz') ? (
                 <Image
                   source={characterImagesAPI.getImageByCharacterAndState(item.character_id, 'muitofeliz')}
-                  style={{ width: 200, height: 200, marginBottom: 10, alignSelf: 'center' }} // Aumentado de 120 para 200
+                  style={{ width: 200, height: 200, marginBottom: 10, alignSelf: 'center' }}
                   resizeMode="contain"
                 />
               ) : (
-                <Text style={{ color: '#FFF', textAlign: 'center' }}>No Image</Text>
+                <Text style={{ color: '#FFF', textAlign: 'center' }}>Sem Imagem</Text>
               )}
               <Text style={styles.petText}>{item.nome}</Text>
             </View>
