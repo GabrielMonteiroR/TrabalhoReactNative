@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Alert, FlatList, Pressable, TextInput, Image, StyleSheet } from 'react-native';
 import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
-import { useRouter } from 'expo-router';
 import { useDatabase } from '@/hooks/useDatabase';
 import { Pet } from '@/db/usePetsDatabase';
 
