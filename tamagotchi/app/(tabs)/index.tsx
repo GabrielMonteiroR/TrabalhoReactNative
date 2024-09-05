@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
 export default function IndexScreen() {
   const [pets, setPets] = useState<Pet[]>([]);
-  const { findAll, deletePet } = useDatabase(); // Assumindo que deletePet existe no hook
+  const { findAll } = useDatabase(); // Assumindo que deletePet existe no hook
 
   // Função para carregar os pets do banco de dados
   const loadPets = async () => {
