@@ -82,8 +82,6 @@ export default function IndexScreen() {
           <Text style={styles.characterStatus}>Fome: {pet.fome}</Text>
           <Text style={styles.characterStatus}>Humor: {pet.diversao}</Text>
           <Text style={styles.characterStatus}>Energia: {pet.sono}</Text>
-
-          <Button title="Excluir" color="#ff4d4d" />
         </View>
       ))}
     </ScrollView>
