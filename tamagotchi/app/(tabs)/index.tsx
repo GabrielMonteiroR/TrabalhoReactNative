@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
 export default function IndexScreen() {
   const router = useRouter();
 
-  // IDs dos personagens para exibição na tela inicial
   const characterIds: CharacterId[] = [1, 2, 3, 4, 5];
 
   return (

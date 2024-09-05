@@ -126,15 +126,16 @@ export default function CreatePet() {
         {Object.keys(characterImagesAPI.getAllCharacterImages()).map((key) => (
           <Pressable
             key={key}
-            onPress={() => setSelectedImage(Number(key))}
+            onPress={() => setSelectedImage(Number(key) as CharacterId)}
             style={[styles.imageCard, selectedImage === Number(key) && styles.selectedImageCard]}
           >
             <Image
-              source={characterImagesAPI.getImageByCharacterAndState(Number(key), 'muitofeliz')}
+              source={characterImagesAPI.getImageByCharacterAndState(Number(key) as CharacterId, 'muitofeliz')}
               style={styles.image}
               resizeMode="contain"
             />
           </Pressable>
+
         ))}
       </View>
 
@@ -146,20 +147,17 @@ export default function CreatePet() {
         data={pets}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <Pressable onPress={() => router.push(`${item.id.toString()}`)}>
             <View style={styles.petContainer}>
-              {item.character_id && characterImagesAPI.getImageByCharacterAndState(item.character_id, 'muitofeliz') ? (
+              {item.character_id && characterImagesAPI.getImageByCharacterAndState(item.character_id as CharacterId, 'muitofeliz') ? (
                 <Image
-                  source={characterImagesAPI.getImageByCharacterAndState(item.character_id, 'muitofeliz')}
+                  source={characterImagesAPI.getImageByCharacterAndState(item.character_id as CharacterId, 'muitofeliz')}
                   style={{ width: 200, height: 200, marginBottom: 10, alignSelf: 'center' }}
                   resizeMode="contain"
                 />
               ) : (
                 <Text style={{ color: '#FFF', textAlign: 'center' }}>Sem Imagem</Text>
               )}
-              <Text style={styles.petText}>{item.nome}</Text>
             </View>
-          </Pressable>
         )}
       />
     </View>
