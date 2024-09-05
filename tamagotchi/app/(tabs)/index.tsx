@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Text, View, Image, StyleSheet, ScrollView, Button, Alert } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import characterImagesAPI from '../../assets/characters/images';
+import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
 import { useDatabase } from '@/hooks/useDatabase';
 import { Pet } from '@/db/usePetsDatabase';
 
@@ -48,19 +48,18 @@ const styles = StyleSheet.create({
 
 export default function IndexScreen() {
   const [pets, setPets] = useState<Pet[]>([]);
-  const { findAll, deletePet } = useDatabase(); // Assumindo que deletePet existe no hook
+  const { findAll } = useDatabase(); 
 
-  // Função para carregar os pets do banco de dados
+
   const loadPets = async () => {
     try {
-      const petsFromDB = await findAll(); // Recupera todos os pets do banco de dados
-      setPets(petsFromDB); // Atualiza o estado com os pets recuperados
+      const petsFromDB = await findAll(); 
+      setPets(petsFromDB); 
     } catch (error) {
       console.log('Erro ao carregar pets:', error);
     }
   };
 
-  // Função para excluir o pet do banco de dados
 
   useFocusEffect(
     useCallback(() => {
@@ -68,6 +67,26 @@ export default function IndexScreen() {
     }, [])
   );
 
+  const calculateStatus = (status: number) => {
+    if (status === 0) {
+      return 'morto';
+    } else if (status >= 1 && status <= 50) {
+      return 'crítico';
+    } else if (status >= 51 && status <= 100) {
+      return 'muito triste';
+    } else if (status >= 101 && status <= 150) {
+      return 'triste';
+    } else if (status >= 151 && status <= 200) {
+      return 'ok';
+    } else if (status >= 201 && status <= 250) {
+      return 'bem';
+    } else if (status >= 251 && status <= 300) {
+      return 'muito bem';
+    } else {
+      return 'desconhecido'; 
+    };
+
+  }
   return (
     <ScrollView style={styles.container}>
       {pets.map((pet) => (
@@ -75,12 +94,12 @@ export default function IndexScreen() {
           <Text style={styles.characterName}>{pet.nome}</Text>
           {pet.character_id && (
             <Image
-              source={characterImagesAPI.getImageByCharacterAndState(pet.character_id, 'muitofeliz')}
+              source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, 'muitofeliz')}
               style={styles.characterImage}
               resizeMode="contain"
             />
           )}
-          <Text style={styles.characterStatus}>Status</Text>
+          <Text style={styles.characterStatus}>Status: {calculateStatus(pet.status)}</Text>
           <Text style={styles.characterStatus}>Fome: {pet.fome}</Text>
           <Text style={styles.characterStatus}>Humor: {pet.diversao}</Text>
           <Text style={styles.characterStatus}>Energia: {pet.sono}</Text>
