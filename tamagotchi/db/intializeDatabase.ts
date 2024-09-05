@@ -3,16 +3,18 @@ import { type SQLiteDatabase } from "expo-sqlite";
 export async function initializeDatabase(database: SQLiteDatabase) {
     try {
         await database.execAsync(`
-            CREATE TABLE IF NOT EXISTS pets (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                fome INTEGER NOT NULL DEFAULT 100,
-                sono INTEGER NOT NULL DEFAULT 100,
-                diversao INTEGER NOT NULL DEFAULT 100,
-                status INTEGER,  
-                character_id INTEGER NOT NULL
-            );
-        `);
+    CREATE TABLE IF NOT EXISTS pets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        fome INTEGER NOT NULL DEFAULT 100,
+        sono INTEGER NOT NULL DEFAULT 100,
+        diversao INTEGER NOT NULL DEFAULT 100,
+        status INTEGER,
+        character_id INTEGER NOT NULL,
+        lastUpdated INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+    );
+`);
+
 
         await database.execAsync(`
             CREATE TRIGGER IF NOT EXISTS calcular_status_no_insert
@@ -35,6 +37,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
                 WHERE id = NEW.id;
             END;
         `);
+        console.log("database rodando!")
     } catch (error) {
         console.error("Erro ao inicializar o banco de dados:", error);
     }
