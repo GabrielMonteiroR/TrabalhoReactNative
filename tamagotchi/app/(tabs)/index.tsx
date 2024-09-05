@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Text, View, Image, StyleSheet, ScrollView, Button, Alert } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Image, StyleSheet, ScrollView, Button } from 'react-native';
 import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
 import { useDatabase } from '@/hooks/useDatabase';
 import { Pet } from '@/db/usePetsDatabase';
+import { calculateStatus } from '@/services/calculateStatus';
 
 const styles = StyleSheet.create({
   container: {
@@ -61,32 +61,11 @@ export default function IndexScreen() {
   };
 
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
       loadPets();
-    }, [])
-  );
+    }
+  ),[];
 
-  const calculateStatus = (status: number) => {
-    if (status === 0) {
-      return 'morto';
-    } else if (status >= 1 && status <= 50) {
-      return 'crítico';
-    } else if (status >= 51 && status <= 100) {
-      return 'muito triste';
-    } else if (status >= 101 && status <= 150) {
-      return 'triste';
-    } else if (status >= 151 && status <= 200) {
-      return 'ok';
-    } else if (status >= 201 && status <= 250) {
-      return 'bem';
-    } else if (status >= 251 && status <= 300) {
-      return 'muito bem';
-    } else {
-      return 'desconhecido'; 
-    };
-
-  }
   return (
     <ScrollView style={styles.container}>
       {pets.map((pet) => (
@@ -104,7 +83,6 @@ export default function IndexScreen() {
           <Text style={styles.characterStatus}>Humor: {pet.diversao}</Text>
           <Text style={styles.characterStatus}>Energia: {pet.sono}</Text>
 
-          {/* Botão de excluir */}
           <Button title="Excluir" color="#ff4d4d" />
         </View>
       ))}

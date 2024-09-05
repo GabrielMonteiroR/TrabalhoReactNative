@@ -76,7 +76,6 @@ export default function CreatePet() {
   const [name, setName] = useState('');
   const [pets] = useState<Pet[]>([]);
   const [selectedImage, setSelectedImage] = useState<CharacterId | null>(null);
-  const router = useRouter();
 
   const { createPet } = useDatabase();
 
