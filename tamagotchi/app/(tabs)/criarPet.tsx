@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Alert, FlatList, Pressable, TextInput, Image, StyleSheet } from 'react-native';
-import { usePetsDatabase, Pet } from '../../db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
 import { useRouter } from 'expo-router';
+import { useDatabase } from '@/hooks/useDatabase';
+import { Pet } from '@/db/usePetsDatabase';
 
 const styles = StyleSheet.create({
   container: {
@@ -77,7 +78,7 @@ export default function CreatePet() {
   const [selectedImage, setSelectedImage] = useState<CharacterId | null>(null);
   const router = useRouter();
 
-  const { createPet } = usePetsDatabase();
+  const { createPet } = useDatabase();
 
   async function create() {
     try {
@@ -88,7 +89,7 @@ export default function CreatePet() {
         return Alert.alert('Adicione um nome ao personagem');
       }
 
-      const response = await createPet({
+      await createPet({
         nome: name,
         character_id: selectedImage,
       });
