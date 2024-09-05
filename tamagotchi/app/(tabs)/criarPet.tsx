@@ -97,7 +97,6 @@ export default function CreatePet() {
       Alert.alert('Pet cadastrado com sucesso!');
       setName('');
       setSelectedImage(null);
-
     } catch (error) {
       console.log('Erro ao criar pet:', error);
     }
@@ -114,12 +113,7 @@ export default function CreatePet() {
         </View>
       )}
 
-      <TextInput
-        placeholder="Nome"
-        onChangeText={setName}
-        value={name}
-        style={styles.input}
-      />
+      <TextInput placeholder="Nome" onChangeText={setName} value={name} style={styles.input} />
 
       <Text style={{ color: '#000', marginBottom: 10 }}>Selecione uma imagem:</Text>
       <View style={styles.imageContainer}>
@@ -135,7 +129,6 @@ export default function CreatePet() {
               resizeMode="contain"
             />
           </Pressable>
-
         ))}
       </View>
 
@@ -147,17 +140,18 @@ export default function CreatePet() {
         data={pets}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-            <View style={styles.petContainer}>
-              {item.character_id && characterImagesAPI.getImageByCharacterAndState(item.character_id as CharacterId, 'muitofeliz') ? (
-                <Image
-                  source={characterImagesAPI.getImageByCharacterAndState(item.character_id as CharacterId, 'muitofeliz')}
-                  style={{ width: 200, height: 200, marginBottom: 10, alignSelf: 'center' }}
-                  resizeMode="contain"
-                />
-              ) : (
-                <Text style={{ color: '#FFF', textAlign: 'center' }}>Sem Imagem</Text>
-              )}
-            </View>
+          <View style={styles.petContainer}>
+            {item.character_id &&
+            characterImagesAPI.getImageByCharacterAndState(item.character_id as CharacterId, 'muitofeliz') ? (
+              <Image
+                source={characterImagesAPI.getImageByCharacterAndState(item.character_id as CharacterId, 'muitofeliz')}
+                style={{ width: 200, height: 200, marginBottom: 10, alignSelf: 'center' }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={{ color: '#FFF', textAlign: 'center' }}>Sem Imagem</Text>
+            )}
+          </View>
         )}
       />
     </View>

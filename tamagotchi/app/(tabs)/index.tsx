@@ -1,7 +1,9 @@
-import React from 'react';
-import { Text, View, Image, Pressable, StyleSheet, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import characterImagesAPI, { CharacterId } from '../../assets/characters/images';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Text, View, Image, StyleSheet, ScrollView } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
+import characterImagesAPI from '../../assets/characters/images';
+import { useDatabase } from '@/hooks/useDatabase';
+import { Pet } from '@/db/usePetsDatabase';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,8 +16,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   characterImage: {
-    width: 150, // Largura da imagem
-    height: 150, // Altura da imagem
+    width: 150,
+    height: 150,
     marginBottom: 10,
   },
   characterName: {
@@ -25,25 +27,41 @@ const styles = StyleSheet.create({
 });
 
 export default function IndexScreen() {
+  const [pets, setPets] = useState<Pet[]>([]); // Estado para armazenar os personagens do banco de dados
   const router = useRouter();
+  const { findAll } = useDatabase(); // Hook personalizado para acessar o banco de dados
 
-  const characterIds: CharacterId[] = [1, 2, 3, 4, 5];
+  // Função para carregar os personagens do banco de dados
+  const loadPets = async () => {
+    try {
+      const petsFromDB = await findAll(); // Recupera todos os pets do banco de dados
+      setPets(petsFromDB); // Atualiza o estado com os pets recuperados
+    } catch (error) {
+      console.log('Erro ao carregar pets:', error);
+    }
+  };
+
+  // Atualiza a listagem de pets sempre que a tela ganhar foco
+  useFocusEffect(
+    useCallback(() => {
+      loadPets();
+    }, [])
+  );
 
   return (
     <ScrollView style={styles.container}>
-      {characterIds.map((id) => (
-        <Pressable
-          key={id}
-        >
-          <View style={styles.characterContainer}>
+      {/* Exibir os personagens carregados do banco de dados */}
+      {pets.map((pet) => (
+        <View key={pet.id} style={styles.characterContainer}>
+          {pet.character_id && (
             <Image
-              source={characterImagesAPI.getImageByCharacterAndState(id, 'muitofeliz')}
+              source={characterImagesAPI.getImageByCharacterAndState(pet.character_id, 'muitofeliz')}
               style={styles.characterImage}
               resizeMode="contain"
             />
-            <Text style={styles.characterName}>Personagem {id}</Text>
-          </View>
-        </Pressable>
+          )}
+          <Text style={styles.characterName}>{pet.nome}</Text>
+        </View>
       ))}
     </ScrollView>
   );
