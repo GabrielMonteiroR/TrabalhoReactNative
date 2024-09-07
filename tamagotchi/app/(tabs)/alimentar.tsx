@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
-import { usePetsDatabase } from '@/db/usePetsDatabase';
+import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function AlimentarScreen() {
   const { id } = useLocalSearchParams();
   const { findById, updateFome } = usePetsDatabase();
-  const [pet, setPet] = useState(null);
+  const [pet, setPet] = useState<Pet>();
 
   useEffect(() => {
     const loadPet = async () => {

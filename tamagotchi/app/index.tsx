@@ -61,7 +61,7 @@ export default function IndexScreen() {
                     <Pressable
                         key={pet.id}
                         style={styles.card}
-                        onPress={() => router.push({ pathname: '/(tabs)/alimentar', params: { id: pet.id } })}
+                        onPress={() => router.push({ pathname: '/(tabs)/dormir', params: { id: pet.id } })}
                     >
                         <Text style={styles.characterName}>{pet.nome}</Text>
                         {pet.character_id && (
