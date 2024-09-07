@@ -1,30 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Pet, usePetsDatabase } from '@/db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
-import { usePetsDatabase } from '@/db/usePetsDatabase';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function DormirScreen() {
   const { id } = useLocalSearchParams();
   const { findById, updateSono } = usePetsDatabase();
-  const [pet, setPet] = useState(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null); // Referência para o intervalo
-  const [isSleeping, setIsSleeping] = useState(false);
+  const [pet, setPet] = useState<Pet | null>(null);
+  const router = useRouter(); // Inicialize o roteador
 
   useEffect(() => {
     const loadPet = async () => {
       try {
-        if (id) {
-          const petData = await findById(id);
-          if (petData) {
-            setPet(petData);
-          } else {
-            Alert.alert('Erro', 'Pet não encontrado.');
-          }
-        } else {
-          Alert.alert('Erro', 'ID do pet não fornecido.');
-        }
+        const petId = Array.isArray(id) ? Number(id[0]) : Number(id);
+        const petData = await findById(petId);
+        setPet(petData);
       } catch (error) {
         console.log('Erro ao buscar pet:', error);
         Alert.alert('Erro', 'Erro ao carregar os dados do pet. Tente novamente mais tarde.');
@@ -32,38 +24,32 @@ export default function DormirScreen() {
     };
 
     loadPet();
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current); // Limpa o intervalo ao desmontar o componente
-      }
-    };
   }, [id]);
 
-  const alterarSono = async (valor) => {
-    if (pet) {
-      const novoStatusSono = Math.min(100, Math.max(0, pet.sono + valor)); // Limita o sono entre 0 e 100
-      try {
-        await updateSono(id, novoStatusSono);
-        setPet((prevPet) => ({ ...prevPet, sono: novoStatusSono }));
-      } catch (error) {
-        console.log('Erro ao atualizar Sono:', error);
-        Alert.alert('Erro', 'Erro ao atualizar o status de sono. Tente novamente.');
-      }
-    }
-  };
-
   const startSleeping = () => {
-    if (!isSleeping && pet && pet.sono < 100) {
-      intervalRef.current = setInterval(() => alterarSono(1), 10000); // Incrementa o sono a cada 10 segundos
-      setIsSleeping(true);
+    if (pet) {
+      Alert.alert('Dormindo...', 'O pet está dormindo por 5 segundos', [{ text: 'Ok' }]);
+      setTimeout(async () => {
+        const novoStatusSono = Math.min(100, pet.sono + 10); // Aumenta o sono em 10 e limita a 100
+        try {
+          await updateSono(pet.id, novoStatusSono);
+          setPet((prevPet) => (prevPet ? { ...prevPet, sono: novoStatusSono } : prevPet));
+          Alert.alert('Sucesso', 'O sono do pet aumentou!');
+        } catch (error) {
+          console.log('Erro ao atualizar sono:', error);
+          Alert.alert('Erro', 'Erro ao atualizar o sono. Tente novamente.');
+        }
+      }, 5000); // Dorme por 5 segundos
     }
   };
 
-  const stopSleeping = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-      setIsSleeping(false);
+  // Navegar para a aba de "Alimentar" com o ID do pet
+  const irParaAlimentar = () => {
+    if (pet) {
+      router.push({
+        pathname: '/(tabs)/alimentar',
+        params: { id: pet.id }, // Passa o ID como parâmetro
+      });
     }
   };
 
@@ -89,23 +75,9 @@ export default function DormirScreen() {
         <MaterialIcons name="bed" size={24} color="#4682b4" />
         <Text style={styles.text}>{pet.sono}</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.circleButton, { backgroundColor: pet.sono >= 100 ? '#d3d3d3' : '#39c234' }]}
-          onPressIn={startSleeping} // Inicia o incremento quando pressionado
-          disabled={pet.sono >= 100 || isSleeping}
-        >
-          <MaterialIcons name="hotel" size={28} color="#ffffff" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.circleButton, { backgroundColor: !isSleeping ? '#d3d3d3' : '#b80920' }]}
-          onPress={stopSleeping}
-          disabled={!isSleeping}
-        >
-          <MaterialIcons name="pause" size={28} color="#ffffff" />
-          <Text style={styles.buttonText}>Parar</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.sleepButton} onPress={startSleeping}>
+        <Text style={styles.buttonText}>Dormir</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -124,23 +96,28 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 24,
-    color: '#ffffff',
+    color: '#333',
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 30,
-  },
-  circleButton: {
+  sleepButton: {
     width: 120,
     height: 70,
     borderRadius: 35,
+    backgroundColor: '#4682b4',
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 10,
+  },
+  alimentarButton: {
+    width: 120,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#ff6347',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginTop: 20,
   },
   buttonText: {
     color: '#ffffff',
@@ -154,7 +131,7 @@ const styles = StyleSheet.create({
   },
   characterName: {
     fontSize: 22,
-    color: '#ffffff',
+    color: '#333',
     fontWeight: 'bold',
     marginBottom: 8,
   },

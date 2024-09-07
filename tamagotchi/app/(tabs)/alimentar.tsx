@@ -1,44 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
+import { useLocalSearchParams } from 'expo-router'; // Para obter os parâmetros da URL
 import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
+import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function AlimentarScreen() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams(); // Obtem o ID passado como parâmetro
   const { findById, updateFome } = usePetsDatabase();
-  const [pet, setPet] = useState<Pet>();
+  const [pet, setPet] = useState<Pet | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadPet = async () => {
       try {
-        const petData = await findById(id);
-        setPet(petData);
+        const petId = Number(id); // Converte o ID para número
+        if (!isNaN(petId)) {
+          const petData = await findById(petId);
+          setPet(petData);
+        } else {
+          console.log('ID inválido');
+        }
       } catch (error) {
         console.log('Erro ao buscar pet:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadPet();
   }, [id]);
 
-  const alterarFome = async (valor) => {
+  const alterarFome = async () => {
     if (pet) {
-      const novoStatusFome = Math.min(100, Math.max(0, pet.fome + valor)); // Limita a fome entre 0 e 100
+      const novoStatusFome = Math.min(100, pet.fome + 10); // Limita a fome a no máximo 100
       try {
-        await updateFome(id, novoStatusFome);
-        setPet((prevPet) => ({ ...prevPet, fome: novoStatusFome }));
+        await updateFome(pet.id, novoStatusFome);
+        setPet((prevPet) => (prevPet ? { ...prevPet, fome: novoStatusFome } : prevPet));
       } catch (error) {
         console.log('Erro ao atualizar fome:', error);
       }
     }
   };
 
-  if (!pet) {
+  if (loading) {
     return (
       <View style={styles.container}>
         <Text>Carregando...</Text>
+      </View>
+    );
+  }
+
+  if (!pet) {
+    return (
+      <View style={styles.container}>
+        <Text>Pet não encontrado.</Text>
       </View>
     );
   }
@@ -58,13 +74,9 @@ export default function AlimentarScreen() {
         <Text style={styles.text}>{pet.fome}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.circleButton} onPress={() => alterarFome(10)}>
+        <TouchableOpacity style={styles.circleButton} onPress={alterarFome}>
           <MaterialIcons name="fastfood" size={28} color="#39c234" />
-          <Text style={styles.buttonText}>+10</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton} onPress={() => alterarFome(-10)}>
-          <MaterialIcons name="fastfood" size={28} color="#b80920" />
-          <Text style={styles.buttonText}>-10</Text>
+          <Text style={styles.buttonText}>Alimentar +10</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -85,18 +97,15 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 24,
-    color: '#ffffff',
+    color: '#333',
     fontWeight: 'bold',
     marginBottom: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
     marginTop: 30,
   },
   circleButton: {
-    width: 70,
+    width: 120,
     height: 70,
     borderRadius: 35,
     backgroundColor: '#ff6347',
@@ -116,7 +125,7 @@ const styles = StyleSheet.create({
   },
   characterName: {
     fontSize: 22,
-    color: '#ffffff',
+    color: '#333',
     fontWeight: 'bold',
     marginBottom: 8,
   },

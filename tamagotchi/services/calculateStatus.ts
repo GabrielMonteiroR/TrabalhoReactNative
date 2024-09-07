@@ -17,3 +17,4 @@ export function calculateStatus(status: number) {
         return 'desconhecido';
     };
 }
+
