@@ -61,12 +61,14 @@ export default function AlimentarScreen() {
     );
   }
 
+  const statusGeral = calculateStatus(pet.fome + pet.sono + pet.diversao); 
+
   return (
     <View style={styles.container}>
       <Text style={styles.characterName}>{pet.nome}</Text>
       {pet.character_id && (
         <Image
-          source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, calculateStatus(pet.status))} 
+          source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)} 
           style={styles.image}
           resizeMode="contain"
         />
@@ -81,7 +83,7 @@ export default function AlimentarScreen() {
 
       <TouchableOpacity
         style={styles.gamesButton}
-        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })}
+        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })} 
       >
         <Ionicons name="game-controller" size={30} color="#FFF" />
       </TouchableOpacity>

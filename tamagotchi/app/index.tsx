@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
 import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import { calculateAttributeDecay } from '@/services/calculateAttributeDecay';
-import { calculateStatus } from '@/services/calculateStatus'; 
+import { calculateStatus } from '@/services/calculateStatus';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 export default function IndexScreen() {
@@ -55,7 +55,8 @@ export default function IndexScreen() {
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
         {pets.map((pet) => {
-          const status = calculateStatus(pet.status); 
+          const statusGeral = calculateStatus(pet.fome + pet.sono + pet.diversao);
+
           return (
             <Pressable
               key={pet.id}
@@ -65,7 +66,7 @@ export default function IndexScreen() {
               <Text style={styles.characterName}>{pet.nome}</Text>
               {pet.character_id && (
                 <Image
-                  source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, status)}
+                  source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)} 
                   style={styles.characterImage}
                   resizeMode="contain"
                 />
