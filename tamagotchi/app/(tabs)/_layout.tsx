@@ -1,12 +1,12 @@
 import { Tabs, useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon'; // Supondo que você tenha esse componente
+import { TabBarIcon } from '@/components/navigation/TabBarIcon'; 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { id } = useLocalSearchParams(); // Captura o ID uma vez no layout
+  const { id } = useLocalSearchParams(); 
 
   return (
     <Tabs
@@ -23,7 +23,6 @@ export default function TabLayout() {
             <TabBarIcon name={focused ? 'fast-food' : 'fast-food-outline'} color={color} />
           ),
         }}
-        // Passa o id como parâmetro para a rota
         initialParams={{ id }}
       />
       <Tabs.Screen
@@ -34,7 +33,6 @@ export default function TabLayout() {
             <TabBarIcon name={focused ? 'bed' : 'bed-outline'} color={color} />
           ),
         }}
-        // Passa o id como parâmetro para a rota
         initialParams={{ id }}
       />
     </Tabs>

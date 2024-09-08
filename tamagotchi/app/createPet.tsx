@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Alert, Pressable, TextInput, Image, StyleSheet } from 'react-native';
+import { View, Text, Alert, Pressable, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
 import { usePetsDatabase } from '@/db/usePetsDatabase';
-
 
 export default function CreatePet() {
   const [name, setName] = useState('');
@@ -29,7 +28,6 @@ export default function CreatePet() {
       setName('');
       setSelectedImage(null);
 
-
       router.back();
     } catch (error) {
       console.log('Erro ao criar pet:', error);
@@ -40,16 +38,24 @@ export default function CreatePet() {
     selectedImage !== null ? characterImagesAPI.getImageByCharacterAndState(selectedImage, 'muitofeliz') : null;
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Criar Novo Pet</Text>
+
       {selectedImageSource && (
         <View style={styles.selectedImageContainer}>
           <Image source={selectedImageSource} style={styles.selectedImage} resizeMode="contain" />
         </View>
       )}
 
-      <TextInput placeholder="Nome" onChangeText={setName} value={name} style={styles.input} />
+      <TextInput
+        placeholder="Nome"
+        onChangeText={setName}
+        value={name}
+        style={styles.input}
+        placeholderTextColor="#CCC"
+      />
 
-      <Text style={{ color: '#000', marginBottom: 10 }}>Selecione uma imagem:</Text>
+      <Text style={styles.imageSelectionText}>Selecione uma imagem:</Text>
       <View style={styles.imageContainer}>
         {Object.keys(characterImagesAPI.getAllCharacterImages()).map((key) => (
           <Pressable
@@ -67,62 +73,80 @@ export default function CreatePet() {
       </View>
 
       <Pressable onPress={create} style={styles.addButton}>
-        <Text style={styles.addButtonText}>Salvar Personagem</Text>
+        <Text style={styles.addButtonText}>Criar</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#F0F8FF',
-      padding: 32,
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#333',
-      padding: 8,
-      marginBottom: 16,
-      color: '#000',
-    },
-    imageContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      marginBottom: 16,
-    },
-    imageCard: {
-      margin: 5,
-      padding: 5,
-      borderWidth: 1,
-      borderColor: '#000',
-      borderRadius: 5,
-    },
-    selectedImageCard: {
-      borderColor: '#ED2124',
-    },
-    image: {
-      width: 80,
-      height: 80,
-    },
-    selectedImage: {
-      width: 200,
-      height: 200,
-    },
-    selectedImageContainer: {
-      alignItems: 'center',
-      marginBottom: 16,
-    },
-    addButton: {
-      backgroundColor: '#ED2124',
-      padding: 10,
-      borderRadius: 10,
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    addButtonText: {
-      color: '#FFF',
-      fontSize: 18,
-    },
-  });
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#1e1e2f',
+  },
+  title: {
+    fontSize: 26,
+    color: '#FFF',
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#333',
+    padding: 10,
+    borderRadius: 10,
+    width: '100%',
+    marginBottom: 20,
+    color: '#FFF',
+    backgroundColor: '#2c2c3a',
+  },
+  imageSelectionText: {
+    fontSize: 18,
+    color: '#FFF',
+    marginBottom: 10,
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  imageCard: {
+    margin: 5,
+    padding: 5,
+    borderWidth: 2,
+    borderColor: '#333',
+    borderRadius: 10,
+  },
+  selectedImageCard: {
+    borderColor: '#ED2124',
+  },
+  image: {
+    width: 80,
+    height: 80,
+  },
+  selectedImageContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  selectedImage: {
+    width: 200,
+    height: 200,
+  },
+  addButton: {
+    backgroundColor: '#ED2124',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+    width: '100%',
+  },
+  addButtonText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});

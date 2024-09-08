@@ -5,14 +5,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
 import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import { calculateAttributeDecay } from '@/services/calculateAttributeDecay';
+import { calculateStatus } from '@/services/calculateStatus'; 
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 export default function IndexScreen() {
   const [pets, setPets] = useState<Pet[]>([]);
-  const { findAll } = usePetsDatabase();
+  const { findAll, updatePetAttributes } = usePetsDatabase();
   const router = useRouter();
 
-  const { updatePetAttributes } = usePetsDatabase();
   const loadPets = async () => {
     try {
       const petsFromDB = await findAll();
@@ -54,37 +54,40 @@ export default function IndexScreen() {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
-        {pets.map((pet) => (
-          <Pressable
-            key={pet.id}
-            style={styles.card}
-            onPress={() => router.push({ pathname: '/(tabs)/dormir', params: { id: pet.id } })}
-          >
-            <Text style={styles.characterName}>{pet.nome}</Text>
-            {pet.character_id && (
-              <Image
-                source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, 'muitofeliz')}
-                style={styles.characterImage}
-                resizeMode="contain"
-              />
-            )}
+        {pets.map((pet) => {
+          const status = calculateStatus(pet.status); 
+          return (
+            <Pressable
+              key={pet.id}
+              style={styles.card}
+              onPress={() => router.push({ pathname: '/(tabs)/dormir', params: { id: pet.id } })}
+            >
+              <Text style={styles.characterName}>{pet.nome}</Text>
+              {pet.character_id && (
+                <Image
+                  source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, status)}
+                  style={styles.characterImage}
+                  resizeMode="contain"
+                />
+              )}
 
-            <View style={styles.statusContainer}>
-              <View style={styles.statusItem}>
-                <MaterialIcons name="fastfood" size={28} color="#FF6347" />
-                <Text style={styles.statusText}>{pet.fome}</Text>
+              <View style={styles.statusContainer}>
+                <View style={styles.statusItem}>
+                  <MaterialIcons name="fastfood" size={28} color="#FF6347" />
+                  <Text style={styles.statusText}>{pet.fome}</Text>
+                </View>
+                <View style={styles.statusItem}>
+                  <Ionicons name="happy" size={28} color="#FFD700" />
+                  <Text style={styles.statusText}>{pet.diversao}</Text>
+                </View>
+                <View style={styles.statusItem}>
+                  <Ionicons name="bed" size={28} color="#4682B4" />
+                  <Text style={styles.statusText}>{pet.sono}</Text>
+                </View>
               </View>
-              <View style={styles.statusItem}>
-                <Ionicons name="happy" size={28} color="#FFD700" />
-                <Text style={styles.statusText}>{pet.diversao}</Text>
-              </View>
-              <View style={styles.statusItem}>
-                <Ionicons name="bed" size={28} color="#4682B4" />
-                <Text style={styles.statusText}>{pet.sono}</Text>
-              </View>
-            </View>
-          </Pressable>
-        ))}
+            </Pressable>
+          );
+        })}
       </ScrollView>
 
       <Pressable style={styles.addButton} onPress={() => router.push('/createPet')}>
@@ -97,15 +100,15 @@ export default function IndexScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#120e0b', 
+    backgroundColor: '#120e0b',
     paddingBottom: 100,
     paddingHorizontal: 16,
   },
   card: {
-    backgroundColor: '#1e1e2f', 
+    backgroundColor: '#1e1e2f',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#333', 
+    borderColor: '#333',
     padding: 20,
     marginBottom: 20,
     shadowColor: '#000',
@@ -117,24 +120,24 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   characterImage: {
-    width: 320, 
-    height: 360, // Ajuste para imagem de pet maior // Pode ajustar mais se quiser diminuir a distância entre os ícones de status
+    width: 320,
+    height: 360,
   },
   characterName: {
     fontSize: 26,
-    color: '#FFF', // Texto branco para contraste
-    fontWeight: 'bold', // Diminuir a margem entre o título e a imagem
-    fontFamily: 'Roboto', // Fonte moderna
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   statusContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Centralizar os ícones
+    justifyContent: 'center',
     width: '100%',
   },
   statusItem: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginHorizontal: 15, // Aproximar os ícones um do outro
+    marginHorizontal: 15,
   },
   statusText: {
     fontSize: 18,
@@ -162,17 +165,5 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 30,
     fontWeight: 'bold',
-  },
-  gamesButton: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    backgroundColor: '#008CBA',
-    borderRadius: 50,
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
   },
 });

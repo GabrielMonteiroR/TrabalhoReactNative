@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
+import { calculateStatus } from '@/services/calculateStatus'; 
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
@@ -35,7 +36,9 @@ export default function AlimentarScreen() {
       const novoStatusFome = Math.min(100, pet.fome + 10);
       try {
         await updateFome(pet.id, novoStatusFome);
-        setPet((prevPet) => (prevPet ? { ...prevPet, fome: novoStatusFome } : prevPet));
+        const novoStatus = calculateStatus(novoStatusFome + pet.sono + pet.diversao); 
+
+        setPet((prevPet) => (prevPet ? { ...prevPet, fome: novoStatusFome, status: novoStatusFome + pet.sono + pet.diversao } : prevPet));
       } catch (error) {
         console.log('Erro ao atualizar fome:', error);
       }
@@ -63,7 +66,7 @@ export default function AlimentarScreen() {
       <Text style={styles.characterName}>{pet.nome}</Text>
       {pet.character_id && (
         <Image
-          source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, 'muitofeliz')}
+          source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, calculateStatus(pet.status))} 
           style={styles.image}
           resizeMode="contain"
         />
@@ -78,7 +81,7 @@ export default function AlimentarScreen() {
 
       <TouchableOpacity
         style={styles.gamesButton}
-        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })} // Passa o ID do pet como parâmetro
+        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })}
       >
         <Ionicons name="game-controller" size={30} color="#FFF" />
       </TouchableOpacity>

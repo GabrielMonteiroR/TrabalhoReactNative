@@ -25,7 +25,7 @@ export function usePetsDatabase() {
             const result = await statement.executeAsync({
                 $nome: data.nome,
                 $character_id: data.character_id,
-                $lastUpdated: currentTime, // Atribui o timestamp atual
+                $lastUpdated: currentTime, 
             });
 
             return result.lastInsertRowId.toLocaleString();

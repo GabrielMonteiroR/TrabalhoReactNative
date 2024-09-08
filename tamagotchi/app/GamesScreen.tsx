@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useLocalSearchParams } from 'expo-router'; // Para capturar parâmetros
+import { useLocalSearchParams } from 'expo-router'; 
 
 export default function GamesScreen() {
-  const { id } = useLocalSearchParams(); // Captura o ID passado pela navegação
+  const { id } = useLocalSearchParams(); 
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Esta é a tela de jogos</Text>
-      {/* Verifica se o ID foi passado corretamente */}
       {id ? (
         <Text style={styles.text}>ID do pet: {String(id)}</Text>
       ) : (
