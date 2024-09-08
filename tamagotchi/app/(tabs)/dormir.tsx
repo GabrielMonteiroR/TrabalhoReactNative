@@ -3,53 +3,44 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-na
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pet, usePetsDatabase } from '@/db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 export default function DormirScreen() {
   const { id } = useLocalSearchParams();
   const { findById, updateSono } = usePetsDatabase();
   const [pet, setPet] = useState<Pet | null>(null);
-  const router = useRouter(); // Inicialize o roteador
+  const [isSleeping, setIsSleeping] = useState(false); // Controle para desabilitar o botão
+  const router = useRouter();
 
   useEffect(() => {
     const loadPet = async () => {
       try {
-        const petId = Array.isArray(id) ? Number(id[0]) : Number(id);
+        const petId = Number(id);
         const petData = await findById(petId);
         setPet(petData);
       } catch (error) {
-        console.log('Erro ao buscar pet:', error);
-        Alert.alert('Erro', 'Erro ao carregar os dados do pet. Tente novamente mais tarde.');
+        Alert.alert('Erro', 'Erro ao carregar os dados do pet.');
       }
     };
-
     loadPet();
   }, [id]);
 
   const startSleeping = () => {
-    if (pet) {
-      Alert.alert('Dormindo...', 'O pet está dormindo por 5 segundos', [{ text: 'Ok' }]);
+    if (pet && !isSleeping) { // Verifica se o pet está definido e não está dormindo
+      setIsSleeping(true); // Desabilita o botão
+      Alert.alert('Dormindo...', 'O pet está dormindo por 5 segundos');
       setTimeout(async () => {
-        const novoStatusSono = Math.min(100, pet.sono + 10); // Aumenta o sono em 10 e limita a 100
+        const novoStatusSono = Math.min(100, pet.sono + 10);
         try {
           await updateSono(pet.id, novoStatusSono);
           setPet((prevPet) => (prevPet ? { ...prevPet, sono: novoStatusSono } : prevPet));
           Alert.alert('Sucesso', 'O sono do pet aumentou!');
         } catch (error) {
-          console.log('Erro ao atualizar sono:', error);
-          Alert.alert('Erro', 'Erro ao atualizar o sono. Tente novamente.');
+          Alert.alert('Erro', 'Erro ao atualizar o sono.');
+        } finally {
+          setIsSleeping(false); // Habilita o botão novamente após 5 segundos
         }
-      }, 5000); // Dorme por 5 segundos
-    }
-  };
-
-  // Navegar para a aba de "Alimentar" com o ID do pet
-  const irParaAlimentar = () => {
-    if (pet) {
-      router.push({
-        pathname: '/(tabs)/alimentar',
-        params: { id: pet.id }, // Passa o ID como parâmetro
-      });
+      }, 5000);
     }
   };
 
@@ -72,12 +63,29 @@ export default function DormirScreen() {
         />
       )}
       <View style={styles.statusItem}>
-        <MaterialIcons name="bed" size={24} color="#4682b4" />
+        <MaterialIcons name="bed" size={28} color="#4682b4" />
         <Text style={styles.text}>{pet.sono}</Text>
       </View>
-      <TouchableOpacity style={styles.sleepButton} onPress={startSleeping}>
-        <Text style={styles.buttonText}>Dormir</Text>
+
+      {/* Botão de Dormir - Desabilitado enquanto dormindo */}
+      <TouchableOpacity
+        style={[styles.sleepButton, isSleeping && styles.disabledButton]}
+        onPress={startSleeping}
+        disabled={isSleeping} // Desabilita o clique quando isSleeping é true
+      >
+        <Text style={styles.buttonText}>
+          {isSleeping ? 'Dormindo...' : 'Dormir'}
+        </Text>
       </TouchableOpacity>
+
+      {/* Botão de controle para a tela de jogos */}
+      <TouchableOpacity
+        style={styles.gamesButton}
+        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })} // Passa o ID do pet como parâmetro
+      >
+        <Ionicons name="game-controller" size={30} color="#FFF" />
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -88,51 +96,55 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#1e1e2f',
   },
   image: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
+    width: 350,
+    height: 350,
   },
   text: {
     fontSize: 24,
-    color: '#333',
+    color: '#FFF',
     fontWeight: 'bold',
-    marginBottom: 10,
   },
   sleepButton: {
-    width: 120,
-    height: 70,
-    borderRadius: 35,
+    width: 150,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#4682b4',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  alimentarButton: {
-    width: 120,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#ff6347',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 10,
     marginTop: 20,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+  },
+  disabledButton: {
+    backgroundColor: '#7a8b99', // Cor para quando o botão estiver desabilitado
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
   statusItem: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginHorizontal: 10,
+    marginVertical: 20,
   },
   characterName: {
-    fontSize: 22,
-    color: '#333',
+    fontSize: 26,
+    color: '#FFF',
     fontWeight: 'bold',
-    marginBottom: 8,
+  },
+  gamesButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    backgroundColor: '#008CBA',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

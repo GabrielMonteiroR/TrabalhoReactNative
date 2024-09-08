@@ -7,172 +7,172 @@ import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import { calculateAttributeDecay } from '@/services/calculateAttributeDecay';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-
 export default function IndexScreen() {
-    const [pets, setPets] = useState<Pet[]>([]);
-    const { findAll } = usePetsDatabase();
-    const router = useRouter();
+  const [pets, setPets] = useState<Pet[]>([]);
+  const { findAll } = usePetsDatabase();
+  const router = useRouter();
 
-    const { updatePetAttributes } = usePetsDatabase();
-    const loadPets = async () => {
-        try {
-            const petsFromDB = await findAll();
-            const updatedPets = petsFromDB.map(async (pet) => {
-                const { fome, sono, diversao } = calculateAttributeDecay(pet.lastUpdated, pet.fome, pet.sono, pet.diversao);
-                const updatedPet = {
-                    ...pet,
-                    fome,
-                    sono,
-                    diversao,
-                };
+  const { updatePetAttributes } = usePetsDatabase();
+  const loadPets = async () => {
+    try {
+      const petsFromDB = await findAll();
+      const updatedPets = petsFromDB.map(async (pet) => {
+        const { fome, sono, diversao } = calculateAttributeDecay(pet.lastUpdated, pet.fome, pet.sono, pet.diversao);
+        const updatedPet = {
+          ...pet,
+          fome,
+          sono,
+          diversao,
+        };
 
-                if (fome !== pet.fome || sono !== pet.sono || diversao !== pet.diversao) {
-                    await updatePetAttributes(pet.id, fome, sono, diversao);
-                }
-
-                return updatedPet;
-            });
-            setPets(await Promise.all(updatedPets));
-        } catch (error) {
-            console.log('Erro ao carregar pets:', error);
+        if (fome !== pet.fome || sono !== pet.sono || diversao !== pet.diversao) {
+          await updatePetAttributes(pet.id, fome, sono, diversao);
         }
-    };
 
+        return updatedPet;
+      });
+      setPets(await Promise.all(updatedPets));
+    } catch (error) {
+      console.log('Erro ao carregar pets:', error);
+    }
+  };
 
-    useFocusEffect(
-        useCallback(() => {
-            loadPets();
-        }, [])
-    );
+  useFocusEffect(
+    useCallback(() => {
+      loadPets();
+    }, [])
+  );
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            loadPets();
-        }, 3000);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      loadPets();
+    }, 3000);
 
-        return () => clearInterval(intervalId);
-    }, []);
+    return () => clearInterval(intervalId);
+  }, []);
 
+  return (
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {pets.map((pet) => (
+          <Pressable
+            key={pet.id}
+            style={styles.card}
+            onPress={() => router.push({ pathname: '/(tabs)/dormir', params: { id: pet.id } })}
+          >
+            <Text style={styles.characterName}>{pet.nome}</Text>
+            {pet.character_id && (
+              <Image
+                source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, 'muitofeliz')}
+                style={styles.characterImage}
+                resizeMode="contain"
+              />
+            )}
 
-    return (
-        <View style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.container}>
-                {pets.map((pet) => (
-                    <Pressable
-                        key={pet.id}
-                        style={styles.card}
-                        onPress={() => router.push({ pathname: '/(tabs)/dormir', params: { id: pet.id } })}
-                    >
-                        <Text style={styles.characterName}>{pet.nome}</Text>
-                        {pet.character_id && (
-                            <Image
-                                source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, 'muitofeliz')}
-                                style={styles.characterImage}
-                                resizeMode="contain"
-                            />
-                        )}
+            <View style={styles.statusContainer}>
+              <View style={styles.statusItem}>
+                <MaterialIcons name="fastfood" size={28} color="#FF6347" />
+                <Text style={styles.statusText}>{pet.fome}</Text>
+              </View>
+              <View style={styles.statusItem}>
+                <Ionicons name="happy" size={28} color="#FFD700" />
+                <Text style={styles.statusText}>{pet.diversao}</Text>
+              </View>
+              <View style={styles.statusItem}>
+                <Ionicons name="bed" size={28} color="#4682B4" />
+                <Text style={styles.statusText}>{pet.sono}</Text>
+              </View>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
 
-                        <View style={styles.statusContainer}>
-                            <View style={styles.statusItem}>
-                                <MaterialIcons name="fastfood" size={24} color="#ff6347" />
-                                <Text style={styles.statusText}>{pet.fome}</Text>
-                            </View>
-                            <View style={styles.statusItem}>
-                                <Ionicons name="happy" size={24} color="#ffd700" />
-                                <Text style={styles.statusText}>{pet.diversao}</Text>
-                            </View>
-                            <View style={styles.statusItem}>
-                                <Ionicons name="bed" size={24} color="#4682b4" />
-                                <Text style={styles.statusText}>{pet.sono}</Text>
-                            </View>
-                        </View>
-                    </Pressable>
-                ))}
-            </ScrollView>
-
-            <Pressable style={styles.addButton} onPress={() => router.push('/createPet')}>
-                <Text style={styles.addButtonText}>+</Text>
-            </Pressable>
-
-            <Pressable style={styles.gamesButton} onPress={() => router.push('/GamesScreen')}>
-                <Ionicons name="game-controller" size={30} color="#FFF" />
-            </Pressable>
-        </View>
-    );
+      <Pressable style={styles.addButton} onPress={() => router.push('/createPet')}>
+        <Text style={styles.addButtonText}>+</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        backgroundColor: '#F0F8FF',
-        paddingBottom: 100,
-    },
-    card: {
-        backgroundColor: '#FFF',
-        borderRadius: 14,
-        padding: 15,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 5,
-        alignItems: 'center',
-    },
-    characterImage: {
-        width: 150,
-        height: 150,
-        marginBottom: 10,
-        borderRadius: 10,
-    },
-    characterName: {
-        fontSize: 22,
-        color: '#333',
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    statusContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingTop: 10,
-    },
-    statusItem: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginHorizontal: 10,
-    },
-    statusText: {
-        fontSize: 16,
-        color: '#333',
-        marginTop: 5,
-    },
-    addButton: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        backgroundColor: '#ED2124',
-        borderRadius: 50,
-        width: 60,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 10,
-    },
-    addButtonText: {
-        color: '#FFF',
-        fontSize: 30,
-    },
-    gamesButton: {
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        backgroundColor: '#008CBA',
-        borderRadius: 50,
-        width: 60,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 10,
-    },
+  container: {
+    flexGrow: 1,
+    backgroundColor: '#120e0b', 
+    paddingBottom: 100,
+    paddingHorizontal: 16,
+  },
+  card: {
+    backgroundColor: '#1e1e2f', 
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#333', 
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+    alignItems: 'center',
+    width: '100%',
+  },
+  characterImage: {
+    width: 320, 
+    height: 360, // Ajuste para imagem de pet maior // Pode ajustar mais se quiser diminuir a distância entre os ícones de status
+  },
+  characterName: {
+    fontSize: 26,
+    color: '#FFF', // Texto branco para contraste
+    fontWeight: 'bold', // Diminuir a margem entre o título e a imagem
+    fontFamily: 'Roboto', // Fonte moderna
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center', // Centralizar os ícones
+    width: '100%',
+  },
+  statusItem: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginHorizontal: 15, // Aproximar os ícones um do outro
+  },
+  statusText: {
+    fontSize: 18,
+    color: '#FFF',
+    marginTop: 5,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#ED2124',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  addButtonText: {
+    color: '#FFF',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  gamesButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    backgroundColor: '#008CBA',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
 });

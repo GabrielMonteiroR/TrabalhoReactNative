@@ -15,7 +15,7 @@ export function usePetsDatabase() {
     const database = useSQLiteContext();
 
     async function createPet(data: Omit<Pet, 'id' | 'fome' | 'sono' | 'diversao' | 'status' | 'lastUpdated'>) {
-        const currentTime = Math.floor(Date.now() / 1000); // Obtém o timestamp atual em segundos
+        const currentTime = Math.floor(Date.now() / 1000);
 
         const statement = await database.prepareAsync(`
             INSERT INTO pets (nome, fome, sono, diversao, status, character_id, lastUpdated) 
@@ -64,7 +64,7 @@ export function usePetsDatabase() {
     }
 
     async function updateFome(id: number, fome: number) {
-        const currentTime = Math.floor(Date.now() / 1000); // Timestamp atual
+        const currentTime = Math.floor(Date.now() / 1000); 
         
         const statement = await database.prepareAsync(`
             UPDATE pets SET fome = $fome, lastUpdated = $lastUpdated WHERE id = $id;
@@ -84,7 +84,7 @@ export function usePetsDatabase() {
     
 
     async function updateDiversao(id: number, diversao: number) {
-        const currentTime = Math.floor(Date.now() / 1000); // Timestamp atual
+        const currentTime = Math.floor(Date.now() / 1000); 
         
         const statement = await database.prepareAsync(`
             UPDATE pets SET diversao = $diversao, lastUpdated = $lastUpdated WHERE id = $id;
@@ -104,7 +104,7 @@ export function usePetsDatabase() {
     
 
     async function updateSono(id: number, sono: number) {
-        const currentTime = Math.floor(Date.now() / 1000); // Timestamp atual
+        const currentTime = Math.floor(Date.now() / 1000); 
         
         const statement = await database.prepareAsync(`
             UPDATE pets SET sono = $sono, lastUpdated = $lastUpdated WHERE id = $id;

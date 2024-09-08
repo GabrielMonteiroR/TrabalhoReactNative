@@ -12,7 +12,7 @@ export function calculateStatus(status: number) {
     } else if (status >= 201 && status <= 250) {
         return 'bem';
     } else if (status >= 251 && status <= 300) {
-        return 'muito bem';
+        return 'muito feliz';
     } else {
         return 'desconhecido';
     };

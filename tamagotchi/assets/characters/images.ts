@@ -1,4 +1,4 @@
-export type CharacterState = 'bem' | 'muitofeliz' | 'muitotriste' | 'ok' | 'triste' | 'critico';
+export type CharacterState = 'bem' | 'muitofeliz' | 'muitotriste' | 'ok' | 'triste' | 'critico' | 'morto';
 export type CharacterId = 1 | 2 | 3 | 4 | 5;
 
 const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
@@ -8,7 +8,8 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     muitotriste: require('./arkana/muitotriste.png'),
     ok: require('./arkana/ok.png'),
     triste: require('./arkana/triste.png'),
-    critico: require('./arkana/muitotriste.png'),
+    critico: require('./arkana/critico.png'), 
+    morto: require('./arkana/morto.png'), 
   },
   2: {
     bem: require('./ishizu/bem.png'),
@@ -16,7 +17,8 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     muitotriste: require('./ishizu/muitotriste.png'),
     ok: require('./ishizu/ok.png'),
     triste: require('./ishizu/triste.png'),
-    critico: require('./ishizu/muitotriste.png'),
+    critico: require('./ishizu/critico.png'),
+    morto: require('./ishizu/morto.png'),
   },
   3: {
     bem: require('./joey/bem.png'),
@@ -24,7 +26,8 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     muitotriste: require('./joey/muitotriste.png'),
     ok: require('./joey/ok.png'),
     triste: require('./joey/triste.png'),
-    critico: require('./joey/muitotriste.png'),
+    critico: require('./joey/critico.png'),
+    morto: require('./joey/morto.png'),
   },
   4: {
     bem: require('./kaiba/bem.png'),
@@ -32,7 +35,8 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     muitotriste: require('./kaiba/muitotriste.png'),
     ok: require('./kaiba/ok.png'),
     triste: require('./kaiba/triste.png'),
-    critico: require('./kaiba/muitotriste.png'),
+    critico: require('./kaiba/critico.png'),
+    morto: require('./kaiba/morto.png'),
   },
   5: {
     bem: require('./mako/bem.png'),
@@ -40,7 +44,8 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     muitotriste: require('./mako/muitotriste.png'),
     ok: require('./mako/ok.png'),
     triste: require('./mako/triste.png'),
-    critico: require('./mako/muitotriste.png'),
+    critico: require('./mako/critico.png'),
+    morto: require('./mako/morto.png'),
   },
 };
 

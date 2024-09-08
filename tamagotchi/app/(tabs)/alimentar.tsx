@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from 'expo-router'; // Para obter os parâmetros da URL
+import { useLocalSearchParams } from 'expo-router';
 import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function AlimentarScreen() {
-  const { id } = useLocalSearchParams(); // Obtem o ID passado como parâmetro
+  const { id } = useLocalSearchParams();
   const { findById, updateFome } = usePetsDatabase();
   const [pet, setPet] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const loadPet = async () => {
       try {
-        const petId = Number(id); // Converte o ID para número
+        const petId = Number(id);
         if (!isNaN(petId)) {
           const petData = await findById(petId);
           setPet(petData);
-        } else {
-          console.log('ID inválido');
         }
       } catch (error) {
         console.log('Erro ao buscar pet:', error);
@@ -27,13 +27,12 @@ export default function AlimentarScreen() {
         setLoading(false);
       }
     };
-
     loadPet();
   }, [id]);
 
   const alterarFome = async () => {
     if (pet) {
-      const novoStatusFome = Math.min(100, pet.fome + 10); // Limita a fome a no máximo 100
+      const novoStatusFome = Math.min(100, pet.fome + 10);
       try {
         await updateFome(pet.id, novoStatusFome);
         setPet((prevPet) => (prevPet ? { ...prevPet, fome: novoStatusFome } : prevPet));
@@ -46,7 +45,7 @@ export default function AlimentarScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text>Carregando...</Text>
+        <Text style={styles.text}>Carregando...</Text>
       </View>
     );
   }
@@ -54,7 +53,7 @@ export default function AlimentarScreen() {
   if (!pet) {
     return (
       <View style={styles.container}>
-        <Text>Pet não encontrado.</Text>
+        <Text style={styles.text}>Pet não encontrado.</Text>
       </View>
     );
   }
@@ -70,15 +69,20 @@ export default function AlimentarScreen() {
         />
       )}
       <View style={styles.statusItem}>
-        <MaterialIcons name="fastfood" size={24} color="#ff6347" />
+        <MaterialIcons name="fastfood" size={28} color="#FF6347" />
         <Text style={styles.text}>{pet.fome}</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.circleButton} onPress={alterarFome}>
-          <MaterialIcons name="fastfood" size={28} color="#39c234" />
-          <Text style={styles.buttonText}>Alimentar +10</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.circleButton} onPress={alterarFome}>
+        <Text style={styles.buttonText}>Comer</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.gamesButton}
+        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })} // Passa o ID do pet como parâmetro
+      >
+        <Ionicons name="game-controller" size={30} color="#FFF" />
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -88,45 +92,54 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#1e1e2f',
   },
   image: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
+    width: 350,
+    height: 350,
   },
   text: {
     fontSize: 24,
-    color: '#333',
+    color: '#FFF',
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  buttonContainer: {
-    marginTop: 30,
-  },
   circleButton: {
-    width: 120,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#ff6347',
+    width: 150,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FF6347',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 10,
+    marginTop: 20,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    marginLeft: 10,
   },
   statusItem: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginHorizontal: 10,
+    marginVertical: 20,
   },
   characterName: {
-    fontSize: 22,
-    color: '#333',
+    fontSize: 26,
+    color: '#FFF',
     fontWeight: 'bold',
-    marginBottom: 8,
+  },
+  gamesButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    backgroundColor: '#008CBA',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
