@@ -29,16 +29,16 @@ const MemoryGame = () => {
   const [selectedCards, setSelectedCards] = useState<Card[]>([]);
   const [matches, setMatches] = useState(0);
   const [score, setScore] = useState(0);
-  const [pet, setPet] = useState<Pet | null>(null); // Estado para o pet
+  const [pet, setPet] = useState<Pet | null>(null); 
 
-  const { updateDiversao, findById } = usePetsDatabase(); // Desestruturando o hook
+  const { updateDiversao, findById } = usePetsDatabase(); 
 
   useEffect(() => {
     setCards(generateInitialCards());
   }, []);
 
   useEffect(() => {
-    // Supondo que você tenha um ID de pet, você deve buscar o pet aqui
+
     const loadPet = async () => {
       try {
         const petId = Number(id);
@@ -79,7 +79,6 @@ const MemoryGame = () => {
       }
     };
 
-    // Chama alterarDiversao sempre que a pontuação mudar
     alterarDiversao();
   }, [score, pet, updateDiversao]);
 
@@ -102,7 +101,7 @@ const MemoryGame = () => {
         setTimeout(() => {
           setCards(newCards.map((c) => (c.id === card.id || c.id === firstCard.id ? { ...c, flipped: false } : c)));
           setSelectedCards([]);
-          setScore((prevScore) => Math.max(prevScore - 10, 0)); // Garantir que o score não fique negativo
+          setScore((prevScore) => Math.max(prevScore - 10, 0)); 
         }, 1500);
       }
     }
