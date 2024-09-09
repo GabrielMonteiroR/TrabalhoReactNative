@@ -66,7 +66,7 @@ export default function IndexScreen() {
               <Text style={styles.characterName}>{pet.nome}</Text>
               {pet.character_id && (
                 <Image
-                  source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)} 
+                  source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)}
                   style={styles.characterImage}
                   resizeMode="contain"
                 />
