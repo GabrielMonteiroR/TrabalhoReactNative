@@ -1,109 +1,75 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { usePetsDatabase } from '@/db/usePetsDatabase';
+import { calculateStatus } from '@/services/calculateStatus';
+import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
+import { Ionicons } from '@expo/vector-icons';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F0F8FF',
-    padding: 16,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#333',
-    textShadowColor: '#aaa',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  buttonContainer: {
-    width: '90%',
-    marginBottom: 30,
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: '#1E90FF',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  buttonDescription: {
-    color: '#444',
-    fontSize: 16,
-    fontWeight: '500',
-    marginVertical: 10,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  buttonImage1: {
-    width: 180,
-    height: 100,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#1E90FF',
-    marginBottom: 10,
-  },
-  buttonImage2: {
-    width: 100,
-    height: 130,
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: '#1E90FF',
-    marginBottom: 10,
-  },
-});
-
-export default function JogosScreen() {
+export default function GameScreen() {
+  const [pet, setPet] = useState<any>(null);
+  const { findById } = usePetsDatabase();
+  const { id } = useLocalSearchParams();
   const router = useRouter();
 
-  const handleSelectJogo1 = () => {
-    router.push('/JogoDaMemoria');
-  };
+  useEffect(() => {
+    const loadPet = async () => {
+      if (id) {
+        const petData = await findById(Number(id));
+        setPet(petData);
+      }
+    };
 
-  const handleSelectJogo2 = () => {
-    router.push('/CriacaodeCartas');
-  };
+    const intervalId = setInterval(loadPet, 1000);
+    return () => clearInterval(intervalId);
+  }, [id]);
+
+  if (!pet) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Carregando...</Text>
+      </View>
+    );
+  }
+
+  const statusGeral = calculateStatus(pet.fome + pet.sono + pet.diversao);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Selecione um Jogo</Text>
-
-      <View style={styles.buttonContainer}>
-        <Image
-          source={{ uri: 'https://p2.trrsf.com/image/fget/cf/774/0/images.terra.com/2022/02/17/intro-1576000152.jpg' }}
-          style={styles.buttonImage1}
-        />
-        <Text style={styles.buttonDescription}>Jogo da Memória</Text>
-        <TouchableOpacity style={styles.button} onPress={handleSelectJogo1}>
-          <Text style={styles.buttonText}>Selecionar</Text>
-        </TouchableOpacity>
+      <Text style={styles.title}>{pet.nome}</Text>
+      <Image
+        source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)}
+        style={styles.image}
+      />
+      <View style={styles.statusContainer}>
+        <Ionicons name="happy" size={28} color="#FFD700" />
+        <Text style={styles.statusText}>{pet.diversao}</Text>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <Image
-          source={{ uri: 'https://i.pinimg.com/736x/ea/df/ea/eadfea63ba18cd263e295d9fc5c38634.jpg' }}
-          style={styles.buttonImage2}
-        />
-        <Text style={styles.buttonDescription}>Criação de Cartas</Text>
-        <TouchableOpacity style={styles.button} onPress={handleSelectJogo2}>
-          <Text style={styles.buttonText}>Selecionar</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push({ pathname: '/QuizCarta', params: { id: pet.id } })}
+      >
+        <Text style={styles.buttonText}>Quiz das Cartas</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push({ pathname: '/AdivinheOPersonagem', params: { id: pet.id } })}
+      >
+        <Text style={styles.buttonText}>Adivinhe o Personagem</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1e1e2f', padding: 20 },
+  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 16, color: '#FFF' },
+  image: { width: 300, height: 300, marginBottom: 20 },
+  statusContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+  statusText: { fontSize: 24, color: '#FFD700', marginLeft: 10 },
+  button: { backgroundColor: '#1E90FF', padding: 15, borderRadius: 10, marginVertical: 10 },
+  buttonText: { color: '#FFF', fontSize: 18 },
+  text: { color: '#FFF' },
+});

@@ -3,45 +3,51 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-na
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pet, usePetsDatabase } from '@/db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
-import { calculateStatus } from '@/services/calculateStatus'; // Importação da função calculateStatus
+import { calculateStatus } from '@/services/calculateStatus';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 export default function DormirScreen() {
   const { id } = useLocalSearchParams();
   const { findById, updateSono } = usePetsDatabase();
   const [pet, setPet] = useState<Pet | null>(null);
-  const [isSleeping, setIsSleeping] = useState(false); // Controle para desabilitar o botão
+  const [isSleeping, setIsSleeping] = useState(false);
   const router = useRouter();
 
+
+  const loadPet = async () => {
+    try {
+      const petId = Number(id);
+      const petData = await findById(petId);
+      setPet(petData);
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao carregar os dados do pet.');
+    }
+  };
+
   useEffect(() => {
-    const loadPet = async () => {
-      try {
-        const petId = Number(id);
-        const petData = await findById(petId);
-        setPet(petData);
-      } catch (error) {
-        Alert.alert('Erro', 'Erro ao carregar os dados do pet.');
-      }
-    };
-    loadPet();
+    loadPet(); 
+
+    const intervalId = setInterval(() => {
+      loadPet();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, [id]);
 
   const startSleeping = () => {
-    if (pet && !isSleeping) { // Verifica se o pet está definido e não está dormindo
-      setIsSleeping(true); // Desabilita o botão
+    if (pet && !isSleeping) {
+      setIsSleeping(true);
       Alert.alert('Dormindo...', 'O pet está dormindo por 5 segundos');
       setTimeout(async () => {
         const novoStatusSono = Math.min(100, pet.sono + 10);
         try {
           await updateSono(pet.id, novoStatusSono);
-          const novoStatus = calculateStatus(novoStatusSono + pet.fome + pet.diversao); // Recalcula o status geral com base em todos os atributos
-
-          setPet((prevPet) => (prevPet ? { ...prevPet, sono: novoStatusSono, status: novoStatusSono + pet.fome + pet.diversao } : prevPet));
+          loadPet(); 
           Alert.alert('Sucesso', 'O sono do pet aumentou!');
         } catch (error) {
           Alert.alert('Erro', 'Erro ao atualizar o sono.');
         } finally {
-          setIsSleeping(false); // Habilita o botão novamente após 5 segundos
+          setIsSleeping(false);
         }
       }, 5000);
     }
@@ -55,14 +61,14 @@ export default function DormirScreen() {
     );
   }
 
-  const statusGeral = calculateStatus(pet.fome + pet.sono + pet.diversao); // Calcula o status geral
+  const statusGeral = calculateStatus(pet.fome + pet.sono + pet.diversao);
 
   return (
     <View style={styles.container}>
       <Text style={styles.characterName}>{pet.nome}</Text>
       {pet.character_id && (
         <Image
-          source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)} // Usa o status geral para escolher a imagem
+          source={characterImagesAPI.getImageByCharacterAndState(pet.character_id as CharacterId, statusGeral)}
           style={styles.image}
           resizeMode="contain"
         />
@@ -72,25 +78,22 @@ export default function DormirScreen() {
         <Text style={styles.text}>{pet.sono}</Text>
       </View>
 
-      {/* Botão de Dormir - Desabilitado enquanto dormindo */}
       <TouchableOpacity
         style={[styles.sleepButton, isSleeping && styles.disabledButton]}
         onPress={startSleeping}
-        disabled={isSleeping} // Desabilita o clique quando isSleeping é true
+        disabled={isSleeping}
       >
         <Text style={styles.buttonText}>
           {isSleeping ? 'Dormindo...' : 'Dormir'}
         </Text>
       </TouchableOpacity>
 
-      {/* Botão de controle para a tela de jogos */}
       <TouchableOpacity
         style={styles.gamesButton}
-        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })} // Passa o ID do pet como parâmetro
+        onPress={() => router.push({ pathname: '/GamesScreen', params: { id: pet.id } })}
       >
         <Ionicons name="game-controller" size={30} color="#FFF" />
       </TouchableOpacity>
-
     </View>
   );
 }
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   disabledButton: {
-    backgroundColor: '#7a8b99', // Cor para quando o botão estiver desabilitado
+    backgroundColor: '#7a8b99',
   },
   buttonText: {
     color: '#fff',

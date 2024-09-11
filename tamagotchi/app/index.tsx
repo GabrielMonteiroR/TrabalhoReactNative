@@ -86,6 +86,8 @@ export default function IndexScreen() {
                   <Text style={styles.statusText}>{pet.sono}</Text>
                 </View>
               </View>
+
+              <Text style={styles.statusGeralText}>{statusGeral}</Text>
             </Pressable>
           );
         })}
@@ -144,6 +146,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFF',
     marginTop: 5,
+  },
+  statusGeralText: {
+    fontSize: 18,
+    color: '#FFD700',
+    marginTop: 10,
+    fontWeight: 'bold',
   },
   addButton: {
     position: 'absolute',

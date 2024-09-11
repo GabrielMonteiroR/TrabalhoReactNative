@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { usePetsDatabase, Pet } from '@/db/usePetsDatabase';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
 import { calculateStatus } from '@/services/calculateStatus'; 
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 
 export default function AlimentarScreen() {
   const { id } = useLocalSearchParams();
@@ -14,21 +13,28 @@ export default function AlimentarScreen() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const loadPet = async () => {
-      try {
-        const petId = Number(id);
-        if (!isNaN(petId)) {
-          const petData = await findById(petId);
-          setPet(petData);
-        }
-      } catch (error) {
-        console.log('Erro ao buscar pet:', error);
-      } finally {
-        setLoading(false);
+  const loadPet = async () => {
+    try {
+      const petId = Number(id);
+      if (!isNaN(petId)) {
+        const petData = await findById(petId);
+        setPet(petData);
       }
-    };
-    loadPet();
+    } catch (error) {
+      console.log('Erro ao buscar pet:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPet(); 
+
+    const intervalId = setInterval(() => {
+      loadPet(); 
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, [id]);
 
   const alterarFome = async () => {
@@ -36,9 +42,7 @@ export default function AlimentarScreen() {
       const novoStatusFome = Math.min(100, pet.fome + 10);
       try {
         await updateFome(pet.id, novoStatusFome);
-        const novoStatus = calculateStatus(novoStatusFome + pet.sono + pet.diversao); 
-
-        setPet((prevPet) => (prevPet ? { ...prevPet, fome: novoStatusFome, status: novoStatusFome + pet.sono + pet.diversao } : prevPet));
+        await loadPet(); 
       } catch (error) {
         console.log('Erro ao atualizar fome:', error);
       }
@@ -87,7 +91,6 @@ export default function AlimentarScreen() {
       >
         <Ionicons name="game-controller" size={30} color="#FFF" />
       </TouchableOpacity>
-
     </View>
   );
 }
