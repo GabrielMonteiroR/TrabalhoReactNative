@@ -1,5 +1,5 @@
 export type CharacterState = 'bem' | 'muitofeliz' | 'muitotriste' | 'ok' | 'triste' | 'critico' | 'morto';
-export type CharacterId = 1 | 2 | 3 | 4 | 5 | 6;
+export type CharacterId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
   1: {
@@ -55,6 +55,33 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     triste: require('./yugi/triste.png'),
     critico: require('./yugi/critico.png'),
     morto: require('./yugi/morto.png'),
+  },
+  7: {
+    bem: require('./yamiYugi/bem.png'),
+    muitofeliz: require('./yamiYugi/muitofeliz.png'),
+    muitotriste: require('./yamiYugi/muitotriste.png'),
+    ok: require('./yamiYugi/ok.png'),
+    triste: require('./yamiYugi/triste.png'),
+    critico: require('./yamiYugi/critico.png'),
+    morto: require('./yamiYugi/morto.png'),
+  },
+  8: {
+    bem: require('./marik/bem.png'),
+    muitofeliz: require('./marik/muitofeliz.png'),
+    muitotriste: require('./marik/muitotriste.png'),
+    ok: require('./marik/ok.png'),
+    triste: require('./marik/triste.png'),
+    critico: require('./marik/critico.png'),
+    morto: require('./marik/morto.png'),
+  },
+  9: {
+    bem: require('./tea/bem.png'),
+    muitofeliz: require('./tea/muitofeliz.png'),
+    muitotriste: require('./tea/muitotriste.png'),
+    ok: require('./tea/ok.png'),
+    triste: require('./tea/triste.png'),
+    critico: require('./tea/critico.png'),
+    morto: require('./tea/morto.png'),
   },
 };
 
