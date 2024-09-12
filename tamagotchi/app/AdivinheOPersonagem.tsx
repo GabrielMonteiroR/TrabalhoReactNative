@@ -12,6 +12,9 @@ const characters = [
   { id: 4, name: 'Kaiba' },
   { id: 5, name: 'Mako' },
   { id: 6, name: 'Yugi' },
+  { id: 7, name: 'Yami Yugi' },
+  { id: 8, name: 'Marik' },
+  { id: 9, name: 'Téa' },
 ];
 
 export default function AdivinheOPersonagem() {
@@ -28,10 +31,10 @@ export default function AdivinheOPersonagem() {
 
   useEffect(() => {
     const randomizeCharacters = () => {
-      const first = (Math.floor(Math.random() * 5) + 1) as CharacterId;
+      const first = (Math.floor(Math.random() * 9) + 1) as CharacterId;
       let second: CharacterId;
       do {
-        second = (Math.floor(Math.random() * 5) + 1) as CharacterId;
+        second = (Math.floor(Math.random() * 9) + 1) as CharacterId;
       } while (second === first);
 
       setSelectedCharacters({ left: first, right: second });
