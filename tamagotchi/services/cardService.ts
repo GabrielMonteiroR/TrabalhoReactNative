@@ -5,7 +5,7 @@ export const cardNames: { [key: number]: string } = {
   4: 'Dragão Negro de Olhos Vermelhos',
   5: 'Exodia, o Proibido',
   6: 'Pescador Lendário',
-  7: 'Gandora',
+  7: 'Gandora o Dragão da Destruição',
   8: 'Mago Negro - Arkana',
   9: 'Obelisco, o Atormentador',
   10: 'Mago do Tempo',
