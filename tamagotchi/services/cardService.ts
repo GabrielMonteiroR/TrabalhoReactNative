@@ -1,6 +1,6 @@
 export const cardNames: { [key: number]: string } = {
   1: 'Pequena Maga Negra',
-  2: 'Dragão Alado de Ra',
+  2: 'Dragão Alado de Rá',
   3: 'Dragão Branco de Olhos Azuis',
   4: 'Dragão Negro de Olhos Vermelhos',
   5: 'Exodia, o Proibido',
