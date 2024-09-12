@@ -1,5 +1,5 @@
 export type CharacterState = 'bem' | 'muitofeliz' | 'muitotriste' | 'ok' | 'triste' | 'critico' | 'morto';
-export type CharacterId = 1 | 2 | 3 | 4 | 5;
+export type CharacterId = 1 | 2 | 3 | 4 | 5 | 6;
 
 const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
   1: {
@@ -8,8 +8,8 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     muitotriste: require('./arkana/muitotriste.png'),
     ok: require('./arkana/ok.png'),
     triste: require('./arkana/triste.png'),
-    critico: require('./arkana/critico.png'), 
-    morto: require('./arkana/morto.png'), 
+    critico: require('./arkana/critico.png'),
+    morto: require('./arkana/morto.png'),
   },
   2: {
     bem: require('./ishizu/bem.png'),
@@ -47,13 +47,22 @@ const characterImages: Record<CharacterId, Record<CharacterState, any>> = {
     critico: require('./mako/critico.png'),
     morto: require('./mako/morto.png'),
   },
+  6: {
+    bem: require('./yugi/bem.png'),
+    muitofeliz: require('./yugi/muitofeliz.png'),
+    muitotriste: require('./yugi/muitotriste.png'),
+    ok: require('./yugi/ok.png'),
+    triste: require('./yugi/triste.png'),
+    critico: require('./yugi/critico.png'),
+    morto: require('./yugi/morto.png'),
+  },
 };
 
 export default {
   getAllCharacterImages: () => characterImages,
 
   getImagesByState: (state: CharacterState) => {
-    return Object.values(characterImages).map(images => images[state]);
+    return Object.values(characterImages).map((images) => images[state]);
   },
 
   getImageByCharacterAndState: (characterId: CharacterId, state: CharacterState) => {
