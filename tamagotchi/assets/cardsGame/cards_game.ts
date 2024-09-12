@@ -17,7 +17,7 @@ const cardImagens = {
   16: require('./dragaoMilenar/dragaoMilenar.png'),
   17: require('./dragaoBrilhante/dragaoBrilhante.png'),
   18: require('./magoNegroYugi/magoNegroYugi.png'),
-  19: require('./golemLava/golemLava.png'),
+  19: require('./lavaGolem/lavaGolem.png'),
   20: require('./MagoNegroChaos/MagoNegroChaos.png'),
 };
 

@@ -17,7 +17,7 @@ export const cardNames: { [key: number]: string } = {
   16: 'Dragão Milenar',
   17: 'Dragão Brilhante de Olhos Azuis',
   18: 'Mago Negro - Yugi',
-  19: 'Golem Lava',
+  19: 'Lava Golem',
   20: 'Mago Negro do Chaos',
 };
 
