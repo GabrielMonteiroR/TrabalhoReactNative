@@ -12,6 +12,8 @@ const Quiz = () => {
   const [pet, setPet] = useState<any>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [isQuizFinished, setIsQuizFinished] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0); // Variável de estado para o score
+  const totalScore = quizQuestions.length * 10; // Pontuação máxima possível
 
   const [options, setOptions] = useState<number[]>(getRandomOptions(quizQuestions[0].id));
 
@@ -32,10 +34,11 @@ const Quiz = () => {
     if (id === currentQuestionId) {
       if (pet) {
         await updateDiversao(pet.id, Math.min(100, pet.diversao + 10));
+        setScore(score + 10); 
         Alert.alert('Acertou!', '+10 de diversão');
       }
     } else {
-      const correctCardName = cardNames[currentQuestionId]; 
+      const correctCardName = cardNames[currentQuestionId];
       Alert.alert('Errou!', `Essa não é a carta correta.\nA carta correta era: ${correctCardName}.`);
     }
 
@@ -59,7 +62,12 @@ const Quiz = () => {
   if (isQuizFinished) {
     return (
       <View style={styles.container}>
+        <Text style={styles.scoreText}>
+          Sua Pontuação: {score} / {totalScore}
+        </Text>
+
         <Text style={styles.resultText}>Fim do quiz!</Text>
+
       </View>
     );
   }
@@ -125,10 +133,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   resultText: {
-    fontSize: 24,
+    fontSize: 50,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 50,
     color: '#FFD700',
+  },
+  scoreText: {
+    fontSize: 25,
+    marginBottom: 50,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
   text: {
     color: '#FFF',
