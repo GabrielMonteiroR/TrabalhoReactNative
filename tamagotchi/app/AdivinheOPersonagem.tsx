@@ -11,6 +11,10 @@ const characters = [
   { id: 3, name: 'Joey' },
   { id: 4, name: 'Kaiba' },
   { id: 5, name: 'Mako' },
+  { id: 6, name: 'Yugi' },
+  { id: 7, name: 'Yami Yugi' },
+  { id: 8, name: 'Marik' },
+  { id: 9, name: 'Téa' },
 ];
 
 export default function AdivinheOPersonagem() {
@@ -27,10 +31,10 @@ export default function AdivinheOPersonagem() {
 
   useEffect(() => {
     const randomizeCharacters = () => {
-      const first = Math.floor(Math.random() * 5) + 1 as CharacterId; 
+      const first = (Math.floor(Math.random() * 9) + 1) as CharacterId;
       let second: CharacterId;
       do {
-        second = Math.floor(Math.random() * 5) + 1 as CharacterId; 
+        second = (Math.floor(Math.random() * 9) + 1) as CharacterId;
       } while (second === first);
 
       setSelectedCharacters({ left: first, right: second });
@@ -54,9 +58,9 @@ export default function AdivinheOPersonagem() {
 
   useEffect(() => {
     if (data.x > 0.5) {
-      checkAnswer(selectedCharacters.left); 
+      checkAnswer(selectedCharacters.left);
     } else if (data.x < -0.5) {
-      checkAnswer(selectedCharacters.right); 
+      checkAnswer(selectedCharacters.right);
     }
   }, [data]);
 
@@ -88,8 +92,8 @@ export default function AdivinheOPersonagem() {
         style={styles.image}
       />
       <View style={styles.answerContainer}>
-        <Text style={styles.answerLeft}>{characters.find(c => c.id === selectedCharacters.left)?.name}</Text>
-        <Text style={styles.answerRight}>{characters.find(c => c.id === selectedCharacters.right)?.name}</Text>
+        <Text style={styles.answerLeft}>{characters.find((c) => c.id === selectedCharacters.left)?.name}</Text>
+        <Text style={styles.answerRight}>{characters.find((c) => c.id === selectedCharacters.right)?.name}</Text>
       </View>
     </View>
   );

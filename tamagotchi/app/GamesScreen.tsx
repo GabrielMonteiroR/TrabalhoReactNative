@@ -64,12 +64,46 @@ export default function GameScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1e1e2f', padding: 20 },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 16, color: '#FFF' },
-  image: { width: 300, height: 300, marginBottom: 20 },
-  statusContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  statusText: { fontSize: 24, color: '#FFD700', marginLeft: 10 },
-  button: { backgroundColor: '#1E90FF', padding: 15, borderRadius: 10, marginVertical: 10 },
-  buttonText: { color: '#FFF', fontSize: 18 },
-  text: { color: '#FFF' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1e1e2f',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#FFF',
+  },
+  image: {
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  statusText: {
+    fontSize: 24,
+    color: '#FFD700',
+    marginLeft: 10,
+  },
+  button: {
+    backgroundColor: '#1E90FF',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 18,
+  },
+  text: {
+    color: '#FFF',
+  },
 });
+
