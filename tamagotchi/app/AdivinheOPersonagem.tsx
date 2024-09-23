@@ -4,6 +4,8 @@ import { Accelerometer } from 'expo-sensors';
 import { usePetsDatabase } from '@/db/usePetsDatabase';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import characterImagesAPI, { CharacterId } from '@/assets/characters/images';
+import { Ionicons } from '@expo/vector-icons';
+
 
 const characters = [
   { id: 1, name: 'Arkana' },
@@ -87,24 +89,70 @@ export default function AdivinheOPersonagem() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Adivinhe o Personagem</Text>
+
       <Image
         source={characterImagesAPI.getImageByCharacterAndState(selectedCharacters.left as CharacterId, 'muitofeliz')}
         style={styles.image}
       />
+
       <View style={styles.answerContainer}>
-        <Text style={styles.answerLeft}>{characters.find((c) => c.id === selectedCharacters.left)?.name}</Text>
-        <Text style={styles.answerRight}>{characters.find((c) => c.id === selectedCharacters.right)?.name}</Text>
+        <View style={styles.characterContainer}>
+          <Ionicons name="phone-landscape" size={32} color="white" style={styles.icon} />
+          <Text style={styles.answerLeft}>{characters.find((c) => c.id === selectedCharacters.left)?.name}</Text>
+        </View>
+
+        <View style={styles.characterContainer}>
+          <Text style={styles.answerRight}>{characters.find((c) => c.id === selectedCharacters.right)?.name}</Text>
+          <Ionicons name="phone-landscape" size={32} color="white" style={styles.icon} />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1e1e2f' },
-  title: { fontSize: 24, marginBottom: 16, color: '#FFF' },
-  image: { width: 300, height: 300, marginBottom: 20 },
-  answerContainer: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 40 },
-  answerLeft: { fontSize: 18, color: '#FFF', textAlign: 'left' },
-  answerRight: { fontSize: 18, color: '#FFF', textAlign: 'right' },
-  text: { color: '#FFF' },
+  container: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#1e1e2f' 
+  },
+  title: { 
+    fontSize: 24, 
+    marginBottom: 16, 
+    color: '#FFF' 
+  },
+  image: { 
+    width: 300, 
+    height: 300, 
+    marginBottom: 20 
+  },
+  answerContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    width: '100%', 
+    paddingHorizontal: 40 
+  },
+  characterContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  answerLeft: { 
+    fontSize: 18, 
+    color: '#FFF', 
+    textAlign: 'left', 
+    marginLeft: 10
+  },
+  answerRight: { 
+    fontSize: 18, 
+    color: '#FFF', 
+    textAlign: 'right', 
+    marginRight: 10
+  },
+  icon: {
+    marginHorizontal: 10
+  },
+  text: { 
+    color: '#FFF' 
+  }
 });
