@@ -23,6 +23,6 @@ const cardImagens = {
 
 export default {
   getCardImage: (id) => {
-    return cardImagens[id] || null; // Retorna null para IDs inválidos
+    return cardImagens[id] || null; 
   },
 };

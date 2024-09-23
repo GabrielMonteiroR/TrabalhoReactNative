@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { usePetsDatabase } from '@/db/usePetsDatabase';
 import cardImages from '../assets/cardsGame/cards_game';
 import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService'; // Importando da service
 
 const Quiz = () => {
-  const router = useRouter();
+
   const { id } = useLocalSearchParams();
   const { findById, updateDiversao } = usePetsDatabase();
   const [pet, setPet] = useState<any>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [isQuizFinished, setIsQuizFinished] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0); // Variável de estado para o score
-  const totalScore = quizQuestions.length * 10; // Pontuação máxima possível
+  const [score, setScore] = useState<number>(0); ''
+  const totalScore = 20; 
 
   const [options, setOptions] = useState<number[]>(getRandomOptions(quizQuestions[0].id));
 
@@ -33,13 +33,12 @@ const Quiz = () => {
 
     if (id === currentQuestionId) {
       if (pet) {
-        await updateDiversao(pet.id, Math.min(100, pet.diversao + 10));
-        setScore(score + 10); 
-        Alert.alert('Acertou!', '+10 de diversão');
+        await updateDiversao(pet.id, Math.min(100, pet.diversao + 50));
+        setScore(score + 1); // Incrementa a pontuação em 1
+        Alert.alert('Acertou!', 'Parabéns, essa era a carta correta.');
       }
     } else {
-      const correctCardName = cardNames[currentQuestionId];
-      Alert.alert('Errou!', `Essa não é a carta correta.\nA carta correta era: ${correctCardName}.`);
+      Alert.alert('Errou!', `Essa não é a carta correta.`);
     }
 
     const nextQuestion = currentQuestion + 1;
