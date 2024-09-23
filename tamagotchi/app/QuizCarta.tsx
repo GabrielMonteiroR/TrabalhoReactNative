@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-na
 import { useRouter, useLocalSearchParams } from 'expo-router'; 
 import { usePetsDatabase } from '@/db/usePetsDatabase'; 
 import cardImages from '../assets/cardsGame/cards_game'; 
-import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService'; // Importando da service
+import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService'; 
 
 const Quiz = () => {
   const router = useRouter();
