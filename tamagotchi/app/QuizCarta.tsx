@@ -33,10 +33,10 @@ const Quiz = () => {
     if (id === currentQuestionId) {
       if (pet) {
         await updateDiversao(pet.id, Math.min(100, pet.diversao + 10)); 
-        Alert.alert('Acertou!', '+10 de diversão');
+        Alert.alert('Acertou!');
       }
     } else {
-      Alert.alert('Errou!', 'Essa não é a carta correta.');
+      Alert.alert('Errou!');
     }
 
     const nextQuestion = currentQuestion + 1;
