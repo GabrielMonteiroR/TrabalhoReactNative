@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { usePetsDatabase } from '@/db/usePetsDatabase';
 import cardImages from '../assets/cardsGame/cards_game';
-import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService'; 
+import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService';
 
 export default function Quiz() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [isQuizFinished, setIsQuizFinished] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  const totalScore = quizQuestions.length * 10; 
+  const totalScore = 20;
 
   const [options, setOptions] = useState<number[]>(getRandomOptions(quizQuestions[0].id));
 
@@ -33,8 +33,7 @@ export default function Quiz() {
 
     if (id === currentQuestionId) {
       if (pet) {
-        await updateDiversao(pet.id, Math.min(100, pet.diversao + 10));
-        setScore(score + 10);
+        setScore(score + 1);
       }
     }
 
@@ -43,7 +42,7 @@ export default function Quiz() {
       setCurrentQuestion(nextQuestion);
       setOptions(getRandomOptions(quizQuestions[nextQuestion].id));
     } else {
-      await updateDiversao(pet.id, Math.min(100, pet.diversao + 30)); 
+      await updateDiversao(pet.id, Math.min(100, pet.diversao + 30));
       setIsQuizFinished(true);
     }
   };
@@ -64,7 +63,7 @@ export default function Quiz() {
         </Text>
 
         <Text style={styles.resultText}>Fim do quiz!</Text>
-        <Text style={styles.resultText}>+30 de diversão</Text> 
+        <Text style={styles.bonusText}>+30 de diversão</Text>
       </View>
     );
   }
@@ -83,7 +82,7 @@ export default function Quiz() {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -143,5 +142,15 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#FFF',
+  },
+  bonusText: {
+    fontSize: 45,
+    fontWeight: 'bold',
+    color: '#00FF00', // Um verde chamativo
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 3, height: 3 },
+    textShadowRadius: 8,
+    marginBottom: 50,
   },
 });
