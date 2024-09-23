@@ -13,7 +13,6 @@ export default function DormirScreen() {
   const [isSleeping, setIsSleeping] = useState(false);
   const router = useRouter();
 
-
   const loadPet = async () => {
     try {
       const petId = Number(id);
@@ -25,7 +24,7 @@ export default function DormirScreen() {
   };
 
   useEffect(() => {
-    loadPet(); 
+    loadPet();
 
     const intervalId = setInterval(() => {
       loadPet();
@@ -39,10 +38,10 @@ export default function DormirScreen() {
       setIsSleeping(true);
       Alert.alert('Dormindo...', 'O pet está dormindo por 5 segundos');
       setTimeout(async () => {
-        const novoStatusSono = Math.min(100, pet.sono + 10);
+        const novoStatusSono = Math.min(100, pet.sono + 15);
         try {
           await updateSono(pet.id, novoStatusSono);
-          loadPet(); 
+          loadPet();
           Alert.alert('Sucesso', 'O sono do pet aumentou!');
         } catch (error) {
           Alert.alert('Erro', 'Erro ao atualizar o sono.');
@@ -83,9 +82,7 @@ export default function DormirScreen() {
         onPress={startSleeping}
         disabled={isSleeping}
       >
-        <Text style={styles.buttonText}>
-          {isSleeping ? 'Dormindo...' : 'Dormir'}
-        </Text>
+        <Text style={styles.buttonText}>{isSleeping ? 'Dormindo...' : 'Dormir'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

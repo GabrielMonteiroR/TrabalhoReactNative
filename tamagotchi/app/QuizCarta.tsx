@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router'; 
-import { usePetsDatabase } from '@/db/usePetsDatabase'; 
-import cardImages from '../assets/cardsGame/cards_game'; 
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { usePetsDatabase } from '@/db/usePetsDatabase';
+import cardImages from '../assets/cardsGame/cards_game';
 import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService'; 
 
-const Quiz = () => {
+export default function Quiz() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { findById, updateDiversao } = usePetsDatabase();
   const [pet, setPet] = useState<any>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [isQuizFinished, setIsQuizFinished] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0);
+  const totalScore = quizQuestions.length * 10; 
 
   const [options, setOptions] = useState<number[]>(getRandomOptions(quizQuestions[0].id));
-
 
   const loadPet = async () => {
     if (id) {
@@ -32,11 +33,9 @@ const Quiz = () => {
 
     if (id === currentQuestionId) {
       if (pet) {
-        await updateDiversao(pet.id, Math.min(100, pet.diversao + 10)); 
-        Alert.alert('Acertou!');
+        await updateDiversao(pet.id, Math.min(100, pet.diversao + 10));
+        setScore(score + 10);
       }
-    } else {
-      Alert.alert('Errou!');
     }
 
     const nextQuestion = currentQuestion + 1;
@@ -44,6 +43,7 @@ const Quiz = () => {
       setCurrentQuestion(nextQuestion);
       setOptions(getRandomOptions(quizQuestions[nextQuestion].id));
     } else {
+      await updateDiversao(pet.id, Math.min(100, pet.diversao + 30)); 
       setIsQuizFinished(true);
     }
   };
@@ -59,7 +59,12 @@ const Quiz = () => {
   if (isQuizFinished) {
     return (
       <View style={styles.container}>
+        <Text style={styles.scoreText}>
+          Sua Pontuação: {score} / {totalScore}
+        </Text>
+
         <Text style={styles.resultText}>Fim do quiz!</Text>
+        <Text style={styles.resultText}>+30 de diversão</Text> 
       </View>
     );
   }
@@ -108,7 +113,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   redButton: {
-    backgroundColor: '#ED2124', 
+    backgroundColor: '#ED2124',
     borderRadius: 8,
     padding: 8,
     marginVertical: 4,
@@ -125,14 +130,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   resultText: {
-    fontSize: 24,
+    fontSize: 50,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 50,
     color: '#FFD700',
+  },
+  scoreText: {
+    fontSize: 25,
+    marginBottom: 50,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
   text: {
     color: '#FFF',
   },
 });
-
-export default Quiz;
