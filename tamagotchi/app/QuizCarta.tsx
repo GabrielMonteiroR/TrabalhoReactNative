@@ -6,15 +6,13 @@ import cardImages from '../assets/cardsGame/cards_game';
 import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService'; // Importando da service
 
 const Quiz = () => {
-
   const { id } = useLocalSearchParams();
   const { findById, updateDiversao } = usePetsDatabase();
   const [pet, setPet] = useState<any>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [isQuizFinished, setIsQuizFinished] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0); ''
+  const [score, setScore] = useState<number>(0); 
   const totalScore = 20; 
-
   const [options, setOptions] = useState<number[]>(getRandomOptions(quizQuestions[0].id));
 
   const loadPet = async () => {
@@ -66,7 +64,6 @@ const Quiz = () => {
         </Text>
 
         <Text style={styles.resultText}>Fim do quiz!</Text>
-
       </View>
     );
   }
