@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { usePetsDatabase } from '@/db/usePetsDatabase';
 import cardImages from '../assets/cardsGame/cards_game';
 import { getRandomOptions, cardNames, quizQuestions } from '@/services/cardService';
 
 export default function Quiz() {
-  const router = useRouter();
   const { id } = useLocalSearchParams();
   const { findById, updateDiversao } = usePetsDatabase();
   const [pet, setPet] = useState<any>(null);
