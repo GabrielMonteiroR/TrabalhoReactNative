@@ -32,7 +32,7 @@ const Quiz = () => {
     if (id === currentQuestionId) {
       if (pet) {
         await updateDiversao(pet.id, Math.min(100, pet.diversao + 50));
-        setScore(score + 1); // Incrementa a pontuação em 1
+        setScore(score + 1); 
         Alert.alert('Acertou!', 'Parabéns, essa era a carta correta.');
       }
     } else {
